@@ -44,3 +44,15 @@ app.get('/', function(req, res) {
 });
 
 //Create a new todo
+app.post('/todos', function(req, res) {
+    conn.query('INSERT INTO plans (plan) VALUES (?)', [req.body.plan], function(err, result) {
+        if(err) {
+            return res.status(500).end();
+        }
+
+        //Send back the ID of the new todo
+        res.jason({ id: result.insertId });
+        console.log({id: result.insertId});
+    });
+});
+
