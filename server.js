@@ -56,6 +56,42 @@ app.post('/todos', function(req, res) {
     });
 });
 
+//retrieve all the todos
+// this portion allows the user to go to this API-like site and see the json files
+app.get('/todos', function(req, res) {
+    conn.query('SELECT * FROM plans;', function(err, data) {
+        if(err) {
+            res.status(500).end();
+        }
+
+        res.json(data);
+    });
+});
+
+//update a todo
+app.put('/todos/:id', function( req, res) {
+    conn.query('UPDATE plans SET plan = ? WHERE id = ?', [req.body.plan], [req.params.id], function(err, result) {
+        if (err) {
+            return res.status(500).end();
+        } else if (result.changedRows === 0) {
+            return res.status(404).end();
+        }
+        res.status(200).end();
+    });
+});
+
+// add a delete
+app.delete('/todos/:id', function(req, res) {
+    conn.query("DELETE FROM plans WHERE id = ?", [req.params.id], function(err, data) {
+        if(err) {
+            return res.status(500).end();
+        } else if(data.changedRows === 0) {
+            return res.status(404).end();
+        }
+        res.status(200).end();
+    });
+});
+
 //Start our server so that it can begin listening to client requests.
 app.listen(PORT, function() {
     //log (server-side) when our server has started
